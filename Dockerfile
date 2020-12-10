@@ -10,4 +10,4 @@ RUN pip install -r requirements.txt
 
 CMD python app.py
 
-EXPOSE 8080
+EXPOSE 80
