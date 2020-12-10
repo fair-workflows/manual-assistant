@@ -38,6 +38,6 @@ jobs:
           # Your Heroku App Name
           app_name: fair-manual-assistant
           # Dokerfile path
-          dockerfile_path: Dockerfile
+          dockerfile_path: .
           # Optional build parameters
 
