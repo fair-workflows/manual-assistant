@@ -7,7 +7,7 @@ import base64
 from fairworkflows import FairStep
 from jinja2 import Environment, PackageLoader, select_autoescape
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 env = Environment(loader=PackageLoader('manualassistant', 'templates'), autoescape=select_autoescape('html'))
 
 # TODO: Remove
@@ -92,8 +92,7 @@ class ManualTaskServer(HTTPServer):
         self.outputs = []
 
     def confirm_output(self, outputs):
-        print(outputs)
-        self.outputs = {base64.b64decode(k).decode(): v for k, v in outputs.items()}
+        self.outputs = {base64.b64decode(k).decode(): bool(v) for k, v in outputs.items()}
         self.done = True
 
     def is_done(self):
@@ -113,7 +112,6 @@ def execute_manual_step(step: Union[str, FairStep]):
     try:
         while not server.is_done():
             server.handle_request()
-        print(server.outputs)
         return server.outputs
     finally:
         server.server_close()
