@@ -60,9 +60,18 @@ def _create_request_handler(uri):
 
         def do_POST(self):
 
-            print('POST')
-            # Assuming the form has been submitted
-            form_data = cgi.parse(self.rfile)
+            # Parse the form data posted
+            form_data = cgi.FieldStorage(
+                fp=self.rfile,
+                headers=self.headers,
+                environ={
+                    'REQUEST_METHOD': 'POST',
+                    'CONTENT_TYPE': self.headers['Content-Type'],
+                }
+            )
+
+            # Assuming all ids are unique
+            form_data = {field.name: field.value for field in form_data.list}
 
             if _all_boxes_checked(form_data):
                 self.server.confirm_output(form_data)
@@ -77,10 +86,6 @@ def _all_boxes_checked(form_data: Dict[str, List[str]]):
     return all(form_data.values())
 
 
-def execute_manual_step(uri, **inputs):
-    return run(uri)
-
-
 class ManualTaskServer(HTTPServer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -89,14 +94,15 @@ class ManualTaskServer(HTTPServer):
         self.outputs = []
 
     def confirm_output(self, outputs):
-        self.outputs = {base64.b64decode(k): v for k, v in outputs}
+        print(outputs)
+        self.outputs = {base64.b64decode(k).decode(): v for k, v in outputs.items()}
         self.done = True
 
     def is_done(self):
         return self.done
 
 
-def run(uri: str):
+def execute_manual_step(uri: str):
     server_address = (HOST, PORT)
     server = ManualTaskServer(server_address, _create_request_handler(uri))
 
@@ -113,4 +119,4 @@ def run(uri: str):
 
 
 if __name__ == '__main__':
-    run(EXAMPLE_STEP_URI)
+    execute_manual_step(EXAMPLE_STEP_URI)
