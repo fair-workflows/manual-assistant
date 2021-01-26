@@ -1,7 +1,7 @@
 import cgi
 import logging
 from http.server import HTTPServer, BaseHTTPRequestHandler
-from typing import List, Dict
+from typing import List, Dict, Union
 import base64
 
 from fairworkflows import FairStep
@@ -42,11 +42,10 @@ def outputs_to_html(outputs):
         yield base64.b64encode(o.name.encode()).decode(), o.name, o.type
 
 
-def _create_request_handler(uri):
+def _create_request_handler(step: FairStep):
     class ManualStepRequestHandler(BaseHTTPRequestHandler):
         def __init__(self, request, client_address, server):
-            self.uri = uri
-            self.step = get_manual_step(uri)
+            self.step = step
             super().__init__(request, client_address, server)
 
         def _set_response(self):
@@ -59,7 +58,6 @@ def _create_request_handler(uri):
             self.wfile.write(render_manual_step(self.step))
 
         def do_POST(self):
-
             # Parse the form data posted
             form_data = cgi.FieldStorage(
                 fp=self.rfile,
@@ -73,7 +71,7 @@ def _create_request_handler(uri):
             # Assuming all ids are unique
             form_data = {field.name: field.value for field in form_data.list}
 
-            if _all_boxes_checked(form_data):
+            if _all_boxes_checked(form_data, step.outputs):
                 self.server.confirm_output(form_data)
             else:
                 # Just display the page again
@@ -82,8 +80,8 @@ def _create_request_handler(uri):
     return ManualStepRequestHandler
 
 
-def _all_boxes_checked(form_data: Dict[str, List[str]]):
-    return all(form_data.values())
+def _all_boxes_checked(form_data: Dict[str, List[str]], outputs):
+    return len(form_data.keys()) == len(outputs)
 
 
 class ManualTaskServer(HTTPServer):
@@ -102,9 +100,12 @@ class ManualTaskServer(HTTPServer):
         return self.done
 
 
-def execute_manual_step(uri: str):
+def execute_manual_step(step: Union[str, FairStep]):
+    if isinstance(step, str):
+        step = get_manual_step(step)
+
     server_address = (HOST, PORT)
-    server = ManualTaskServer(server_address, _create_request_handler(uri))
+    server = ManualTaskServer(server_address, _create_request_handler(step))
 
     logging.info('Starting Manual Step Assistant')
     logging.info(f'Please go to http://{HOST}:{PORT} to perform the manual step')
