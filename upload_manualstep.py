@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-from fairworkflows import FairStep
+from fairworkflows import FairStep, FairVariable
 import rdflib
 
 PPLAN = rdflib.Namespace('http://purl.org/net/p-plan#')
@@ -20,8 +20,8 @@ def main():
                        value=rdflib.URIRef('http://example.org/photocamera'))
 
     # Set the URIs of the inputs and outputs to this step
-    step.inputs = ['http://example.org/objecttype']
-    step.outputs = ['http://example.org/photo']
+    step.inputs = [FairVariable('objecttype', 'str')]
+    step.outputs = [FairVariable('http://example.org/photo', 'str')]
 
     # Publish the step as a nanopublication for others to find
     result = step.publish_as_nanopub(use_test_server=True)
