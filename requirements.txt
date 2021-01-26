@@ -1,3 +1,4 @@
 dash==1.18.1
 fairworkflows
 dash-bootstrap-components
+flask

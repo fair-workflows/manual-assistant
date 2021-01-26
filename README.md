@@ -2,7 +2,7 @@
 
 How to run
 ```shell
-python app.py
+python dashboard.py
 
 ```
 
