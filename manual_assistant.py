@@ -112,6 +112,8 @@ def execute_manual_step(step: Union[str, FairStep]):
     try:
         while not server.is_done():
             server.handle_request()
+
+        logging.info('Manual step has been completed.')
         return server.outputs
     finally:
         server.server_close()

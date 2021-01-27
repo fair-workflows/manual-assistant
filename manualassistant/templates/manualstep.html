@@ -15,27 +15,39 @@
         integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
         crossorigin="anonymous"></script>
 
-<div class="container-fluid">
+<div class="container-sm">
     <div class="row">
-        <h1>FAIR Manual Assistant</h1>
+        <div class="col-sm">
+            <h1>FAIR Manual Assistant</h1>
+        </div>
     </div>
     <div class="row">
-        <blockquote cite="{{step.source_uri}}">{{step.description}}</blockquote>
+        <div class="col-sm">
+        <p class="lead text-muted">{{step.description}}</p>
+            </div>
     </div>
     <form method="POST">
         <div class="row">
-            Please check the generated outputs:
+            <div class="col-sm">
+            <p>Please check the generated outputs:</p>
+                <div class="col-sm">
         </div>
         <div class="row">
+            <div class="col-sm">
             <div class="mb-3 form-check">
-                {% for id, name, type in outputs %}
-                <input type="checkbox" class="form-check-input" id="{{id}}" name="{{id}}">
-                <label class="form-check-label" for="{{id}}">{{name}} of type {{type}}</label>
-                {% endfor %}
+                <p>
+                    {% for id, name, type in outputs %}
+                    <input type="checkbox" class="form-check-input" id="{{id}}" name="{{id}}" value="True">
+                    <label class="form-check-label" for="{{id}}">{{name}} of type {{type}}</label>
+                    {% endfor %}
+                </p>
+            </div>
             </div>
         </div>
         <div class="row">
+            <div class="col-sm">
             <button type="submit" class="btn btn-primary">Confirm</button>
+            </div>
         </div>
 
     </form>
