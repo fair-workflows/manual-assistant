@@ -1,7 +1,7 @@
 # FAIR Manual Assistant
 
-How to run
-```shell
+How to run:
+```python
 import manual_assistant
 import fairworkflows
 
@@ -22,5 +22,7 @@ outputs = manual_assistant.execute_manual_step(step)
 outputs = manual_assistant.execute_manual_step(EXAMPLE_STEP_URI)
 
 ```
+
+You can also check out the [demo notebook](demo.ipynb)
 
 ![Example](example.png)
