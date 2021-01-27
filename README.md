@@ -1,7 +1,7 @@
 # FAIR Manual Assistant
 
 How to run
-```shell
+```python
 import manual_assistant
 import fairworkflows
 
